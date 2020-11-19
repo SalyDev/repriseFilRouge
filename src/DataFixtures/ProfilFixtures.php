@@ -17,14 +17,11 @@ class ProfilFixtures extends Fixture
             $new_profil = new Profil();
             $new_profil->setLibelle($profilNames[$i]);
             $manager->persist($new_profil);
-            
+
+            //on definit le referencement qu'on va utiliser ensuite dans userFixtures 
+            //pointer ici
             $this->addReference($i, $new_profil);
         }
         $manager->flush();
-
-        
-
-          
-
     }
 }

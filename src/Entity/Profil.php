@@ -2,14 +2,50 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
-use App\Repository\ProfilRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\ProfilRepository;
+use Doctrine\Common\Collections\Collection;
+use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiSubresource;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ApiResource()
+ * @ApiResource(
+ *   attributes={
+ *      "pagination_items_per_page"=2,
+ *      "security" = "is_granted('ROLE_ADMIN')",
+ *      "security_message" = "Seuls les admins ont le droit d'acces à ce ressource",
+ *       },
+ *      normalizationContext={"groups"={"profil:read"}},
+ *     itemOperations={
+ *      "GET"={
+ *          "path"="/admin/profils/{id}",
+ *           "method"="GET",
+ * },
+ *      "PUT"={
+ *          "path"="/admin/profils/{id}",
+ *           "method"="PUT"
+ * },
+ *      "archiveProfil"={
+ *          "name"="archiveProfil",
+ *          "path"="/admin/profils/{id}",
+ *          "method"="DELETE"
+ * },
+ * },
+ *      collectionOperations={
+ *          "listeOfProfilsNoArchives"={
+ *              "name"="listeOfProfilsNoArchives",
+ *              "method"="GET",
+ *              "path"="/admin/profils",
+ * },
+ *          "POST"={
+ *              "method"="POST",
+ *              "path"="/admin/profils"
+ * }
+ * }
+ * )
  * @ORM\Entity(repositoryClass=ProfilRepository::class)
  */
 class Profil
@@ -19,17 +55,28 @@ class Profil
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    protected $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(
+     *      message="Libellé Obligatoire"
+     * )
+     * @Groups({"profil:read"})
      */
     private $libelle;
 
     /**
      * @ORM\OneToMany(targetEntity=User::class, mappedBy="profil")
+     * @ApiSubresource()
+     * @Groups({"profil:read"})
      */
     private $users;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $etat;
 
     public function __construct()
     {
@@ -79,6 +126,18 @@ class Profil
                 $user->setProfil(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getEtat(): ?string
+    {
+        return $this->etat;
+    }
+
+    public function setEtat(?string $etat)
+    {
+        $this->etat = $etat;
 
         return $this;
     }

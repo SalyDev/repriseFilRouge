@@ -7,7 +7,24 @@ use App\Repository\AdminRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ApiResource()
+ * @ApiResource(
+ *  itemOperations={
+ *      "get"={
+ *         "name"="showOneAdmin"
+ * },
+ *      "updateAdmin"={
+ *          "name"="updateAdmin"
+ * }
+ * },
+ *  collectionOperations={
+ *      "addAmin"={
+ *          "name"="addAdmin"
+ * },
+ *      "showAdmins"={
+ *          "name"="showAdmins"
+ * }
+ * }
+ * )
  * @ORM\Entity(repositoryClass=AdminRepository::class)
  * @ORM\Table(name="`admin`")
  */

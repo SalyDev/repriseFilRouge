@@ -8,14 +8,20 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ApiResource(
+ * itemOperations={
+ *      "updateFormateur"={
+ *          "name"="updateFormateur",
+ * },
+ * "get"={
+ *      "name"="showOneFormateur"
+ * }
+ * },
  *  collectionOperations={
  *      "addFormateur"={
  *          "name"="addFormateur",
- *          "path"="/admin/users/formateurs",
  * },
  *      "showFormateurs"={
  *          "name"="showFormateurs",
- *          "path"="/admin/users/formateurs",  
  * }
  * }
  * )

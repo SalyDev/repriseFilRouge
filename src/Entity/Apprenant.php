@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ApprenantRepository;
 use ApiPlatform\Core\Annotation\ApiResource;
@@ -10,19 +11,20 @@ use Symfony\Component\Serializer\Annotation\Groups;
 /**
  * @ApiResource(
  * itemOperations={
+ *      "get"={
+ *          "name"="showOneApprenant"
+ * },
  *      "updateApprenant"={
- *          "path"="admin/users/apprenants",
+ *          "name"="updateApprenant",
  *          "method"="PUT"
  * }
  * },
  * collectionOperations={
  *      "addApprenant"={
  *          "name"="addApprenant",
- *          "path"="admin/users/apprenants",
  * },
  *      "showApprenants"={
  *          "name"="showApprenants",
- *          "path"="admin/users/apprenants",
  * }
  * }
  * )

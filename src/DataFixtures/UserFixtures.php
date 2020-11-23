@@ -14,7 +14,6 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UserFixtures extends Fixture
 {
-
     private $encoder;
     private $profilRepository;
     public function __construct(UserPasswordEncoderInterface $encoder, ProfilRepository $profilRepository)
@@ -46,14 +45,21 @@ class UserFixtures extends Fixture
             }
             $user->setNom($faker->lastName());
             $user->setPrenom($faker->firstName());
-            $user->setEmail($faker->email());
+            $user->setEmail("mail".$i."@gmail.com");
             $pass = $this->encoder->encodePassword($user, "password");
             $user->setPassword($pass);
             // referencement vers les fixtures
             $user->setProfil($this->getReference($i));
             //roles
-            
             $user->setRoles($roles[$i]);
+            //images utilisés pour les avatar
+            $usersAvatar = [
+                'image1.jpeg',
+                'image2.jpeg',
+                'image3.png',
+            ];
+            $avatar = $faker->randomElement($usersAvatar);
+            $user->setAvatar($avatar);
 
             $manager->persist($user);
         }

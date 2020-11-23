@@ -8,15 +8,25 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ApiResource(
- *      attributes={"pagination_items_per_page"=3},
+ *      itemOperations={
+ *          "archiveUser"={
+ *              "path"="/admin/users/{id}",
+ *              "method"="DELETE"
+ * },
+ * }
  * )
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="type", type="string")
  * @ORM\DiscriminatorMap({"apprenant"="Apprenant", "formateur"="Formateur", "admin"="Admin", "cm"="CM", "user"="User"})
+ * @UniqueEntity(
+ *      fields={"email"},
+ *      message="Un utilisateur avec cet email existe deja"
+ * )
  */
 class User implements UserInterface
 {
@@ -59,6 +69,9 @@ class User implements UserInterface
      * @Assert\NotBlank(
      *      message="Prénom Obligatoire"
      * )
+     * @Assert\NotNull(
+     *      message="Prénom vide"
+     * )
      * @Groups({"profil:read"})
      */
     private $prenom;
@@ -85,6 +98,11 @@ class User implements UserInterface
      * @ORM\Column(type="blob", nullable=true)
      */
     private $avatar;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $archive;
 
 
     public function getId(): ?int
@@ -209,6 +227,18 @@ class User implements UserInterface
     public function setAvatar($avatar): self
     {
         $this->avatar = $avatar;
+
+        return $this;
+    }
+
+    public function getArchive(): ?bool
+    {
+        return $this->archive;
+    }
+
+    public function setArchive(?bool $archive): self
+    {
+        $this->archive = $archive;
 
         return $this;
     }

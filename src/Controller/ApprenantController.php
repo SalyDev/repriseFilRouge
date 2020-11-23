@@ -3,15 +3,16 @@
 namespace App\Controller;
 
 use App\Entity\Apprenant;
-use App\Entity\User;
 use App\Repository\ApprenantRepository;
-use App\Services\MyService;
 use App\Services\UploadAvatarService;
 use App\Services\UserService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
+/**
+* @Route("api/admin/users/apprenants", name="")
+*/
 class ApprenantController extends AbstractController
 {
 
@@ -23,33 +24,36 @@ class ApprenantController extends AbstractController
         $this->apprenantRepository = $apprenantRepository;
     }
     /**
-     * @Route("api/admin/users/apprenants", name="addApprenant", methods="POST", defaults={"_api_item_operation_name"="addApprenant"})
+     * @Route("", name="addApprenant", methods="POST", defaults={"_api_collection_operation_name"="addApprenant"})
      */
     public function addApprenant(Request $request)
     {
-        $donnees=$request->request;
         $apprenant = new Apprenant();
-        $apprenant->setAdresse($donnees->get("adresse"));
-        $apprenant->setTelephone($donnees->get("telephone"));
         $this->uploadAvatarService->giveRole("apprenant", $apprenant);
         return $this->userService->addUser($request, $apprenant, "Apprenant ajouté avec succès");
     }
 
     /**
-     * @Route("api/admin/users/apprenants", name="showApprenants", methods="GET", defaults={"_api_collection_operation_name"="showApprenants"})
+     * @Route("", name="showApprenants", methods="GET", defaults={"_api_collection_operation_name"="showApprenants"})
      */
     public function showApprenants()
     {
         return $this->userService->showUsers($this->apprenantRepository);
     }
 
-    /**
-     * @Route("api/admin/users/apprenants/{id}", name="updateApprenant", methods="PUT")
+   /**
+     * @Route("/{id}", name="updateApprenant", methods="PUT", defaults={"_api_item_operation_name"="updateApprenant"})
      */
-    public function updateApprenant(int $id, Request $request)
-    {
-        $apprenant = $this->apprenantRepository->findOneBy(["id" => $id]);
-        return $this->userService->updateUser($apprenant, $request);
+    public function updateApprenant(int $id, Request $request){
+        $object = $this->apprenantRepository->findOneBy(["id" => $id]);
+        return $this->userService->updateUser($object, $request, "Apprenant inexistant", "Apprenant modifié avec succès");
+    }
+
+    /**
+     * @Route("/{id}", name="showOneApprenant", methods="GET", defaults={"_api_item_operation_name"="showOneApprenant"})
+     */
+    public function showOneApprenant(int $id){
+        return $this->userService->showOneUser($id, $this->apprenantRepository);
     }
 
 

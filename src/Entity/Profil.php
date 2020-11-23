@@ -2,23 +2,25 @@
 
 namespace App\Entity;
 
-use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ProfilRepository;
+use ApiPlatform\Core\Annotation\ApiFilter;
 use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiSubresource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
+ * @ApiFilter(BooleanFilter::class, properties={"archive"})
  * @ApiResource(
  *   attributes={
- *      "pagination_items_per_page"=2,
  *      "security" = "is_granted('ROLE_ADMIN')",
  *      "security_message" = "Seuls les admins ont le droit d'acces à ce ressource",
  *       },
- *      normalizationContext={"groups"={"profil:read"}},
  *     itemOperations={
  *      "GET"={
  *          "path"="/admin/profils/{id}",
@@ -29,14 +31,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *           "method"="PUT"
  * },
  *      "archiveProfil"={
- *          "name"="archiveProfil",
  *          "path"="/admin/profils/{id}",
  *          "method"="DELETE"
  * },
  * },
  *      collectionOperations={
- *          "listeOfProfilsNoArchives"={
- *              "name"="listeOfProfilsNoArchives",
+ *          "GET"={
  *              "method"="GET",
  *              "path"="/admin/profils",
  * },
@@ -47,6 +47,11 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * }
  * )
  * @ORM\Entity(repositoryClass=ProfilRepository::class)
+ * @UniqueEntity(
+ *      fields={"libelle"},
+ *      message="Un profil avec cet libellé existe déjà"
+ * )
+
  */
 class Profil
 {
@@ -74,9 +79,10 @@ class Profil
     private $users;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="boolean", nullable=true)
      */
-    private $etat;
+    private $archive;
+
 
     public function __construct()
     {
@@ -130,14 +136,14 @@ class Profil
         return $this;
     }
 
-    public function getEtat(): ?string
+    public function getArchive(): ?bool
     {
-        return $this->etat;
+        return $this->archive;
     }
 
-    public function setEtat(?string $etat)
+    public function setArchive(?bool $archive): self
     {
-        $this->etat = $etat;
+        $this->archive = $archive;
 
         return $this;
     }

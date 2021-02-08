@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Réinitialisation{% endblock %}
+
+{% block body %}
+    <h1>Réinitialisation des informations</h1>
+
+    {{ form_start(resetForm) }}
+        {{ form_row(resetForm.prenom) }}
+        {{ form_row(resetForm.nom) }}
+        {{ form_row(resetForm.adresse) }}
+        {{ form_row(resetForm.telephone) }}
+        {{ form_row(resetForm.genre) }}
+        {{ form_row(resetForm.avatar) }}
+        {{ form_row(resetForm.plainPassword) }}
+        <button class="btn btn-primary">Reset password</button>
+    {{ form_end(resetForm) }}
+{% endblock %}

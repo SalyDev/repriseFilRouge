@@ -76,7 +76,7 @@ class Competence
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"competence:read", "competence:write"})
+     * @Groups({"competence:read", "competence:write", "group_comp:write", "competence:read"})
      */
     private $etat;
 

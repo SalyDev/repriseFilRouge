@@ -114,7 +114,7 @@ class ResetPasswordController extends AbstractController
         // les données doivent parvenir du front a l'aide d'un post
         // remplacer le form par request
 
-        $this->getResetData($request);
+        // $this->getResetData($request);
 
         
         $form = $this->createForm(ChangePasswordFormType::class);
@@ -288,9 +288,9 @@ class ResetPasswordController extends AbstractController
         /**
  * @Route("api/admin/getResetData", name="getResetData", methods={"POST"})
  */
-    public function getResetData(Request $request)
-    {
-        dd($request);
-    }
+    // public function getResetData(Request $request)
+    // {
+    //     dd($request);
+    // }
 
 }

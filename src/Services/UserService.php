@@ -148,6 +148,7 @@ class UserService{
 
     public function uploadExcel($request, $groupe){
         // dd($request);
+        $arrayOfApprenants = [];
          //on recupere le fichier de la requete
        $file = $request->files->get('file'); 
        //le dossier dans lequel on stocke les fichiers
@@ -182,20 +183,19 @@ class UserService{
                 $apprenant->$setter($value);
                 $this->uploadAvatarService->giveRole("apprenant", $apprenant);
             }
-
-            $request2 = new Request;
-            $request2->files->set('avatar', ['https://source.unsplash.com/1080x720/?home']);
-            $apprenant->setAvatar($request2, 'avatar');
-            // dd($apprenant);
+            // on upload un avatar
+            $img = file_get_contents('https://source.unsplash.com/1080x720/?person');
+            $apprenant->setAvatar($img);
             $this->validator->validate($apprenant);
+            array_push($arrayOfApprenants, $apprenant);
             $this->manager->persist($apprenant);
             $groupe->addApprenant($apprenant);  
         }
-        return $emails;
+        return $arrayOfApprenants;
      }
 
      //fonction permettant d'ajouter ou de supprimer un utilisateur d'un promo
-    public function removeOrAddUserToPromo($request, $idPromo, $repository, $key, $message){
+    public function removeOrAddUserToPromo($request, $idPromo, $repository, $key){
         $request = $this->serializerInterface->decode($request->getContent(), "json");
         $user = $repository->findOneBy(["email" => $request]);
         // if(gettype($user) != ucfirst($key)){

@@ -243,7 +243,13 @@ class User implements UserInterface
         if(!$this->avatar){
             return null;
         }
-        return base64_encode(stream_get_contents($this->avatar));
+        else{
+            if(is_resource($this->avatar)){
+                return base64_encode(stream_get_contents($this->avatar)); 
+            }
+            return base64_encode($this->avatar); 
+        }
+        
     }
 
     public function setAvatar($avatar): self

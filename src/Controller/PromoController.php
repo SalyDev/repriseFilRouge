@@ -96,6 +96,7 @@ class PromoController extends AbstractController
     public function addApprenantsInPromo(int $id, Request $request, MailerInterface $mailer, ResetPasswordController $controller)
     {
         $requete = $request->request;
+        $arrayOfApprenants = [];
         $promo = $this->promoRepository->findOneBy(['id' => $id]);
         // on trouve le groupe principal de la promo
         $groupePrincipal = $this->groupeRepository->findPrincipalGroup($promo);
@@ -105,39 +106,39 @@ class PromoController extends AbstractController
             $emails =  preg_split('/[, ]+/', $groupes);
             foreach ($emails as $value) {
                 $pattern = '/^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/';
-                if (preg_match($pattern, $value)) {
+                if (preg_match($pattern, $value)) 
+                {
                     $apprenant = new Apprenant;
                     $apprenant->setEmail($value);
-                    $apprenant->setNom("nom_".$value);
-                    $apprenant->setPrenom("prenom_".$value);
+                    $apprenant->setNom("nom");
+                    $apprenant->setPrenom("prenom");
                     $apprenant->setGenre("femme");
                     // on upload un avatar
-                    // $apprenant->setAvatar();
-                    // il faut définir la un request file
-                    // $avatar = $this->uploadAvatarService->uploadAvatar($request, "avatar");
-                    // $apprenant->setAvatar($avatar);
+                    $img = file_get_contents('https://source.unsplash.com/1080x720/?person');
+                    $apprenant->setAvatar($img);
 
                     $apprenant->setHasJoinPromo(false);
                     $this->uploadAvatarService->giveRole("apprenant", $apprenant);
                     $apprenant->addGroupe($groupePrincipal);
                     $apprenant->setPassword($this->encoder->encodePassword($apprenant, "pass" . uniqid()));
                     $this->manager->persist($apprenant);
+                    array_push($arrayOfApprenants, $apprenant);
                 }
             }
         }
 
         //si on upload un fichier excel
         if (($request->files->get('file'))) {
-            $emails = $this->userService->uploadExcel($request, $groupePrincipal);
+            $arrayOfApprenants = $this->userService->uploadExcel($request, $groupePrincipal);
         }
 
         $this->manager->persist($promo);
         $this->manager->flush();
 
-        foreach ($emails as $value) {
-            $controller->processSendingPasswordResetEmail($value, $mailer);
+        foreach ($arrayOfApprenants as $student) {
+            $controller->processSendingPasswordResetEmail($student->getEmail(), $mailer);
         }
-        return $this->json($promo, 201, []);
+        return $this->json($arrayOfApprenants, 200, []);
     }
 
     /**

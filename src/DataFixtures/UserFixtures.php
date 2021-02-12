@@ -32,6 +32,7 @@ class UserFixtures extends Fixture
                 case 'apprenant':
                     $user = new Apprenant();
                     $user->setProfilsortie($this->getReference('ps'.$j));
+                    $user->setAvatar($faker->imageUrl(640, 480, 'people'));
                     break;
                 case 'admin':
                     $user = new Admin();
@@ -55,13 +56,13 @@ class UserFixtures extends Fixture
             //roles
             $user->setRoles($roles[$i]);
             //images utilisés pour les avatar
-            $usersAvatar = [
-                'image1.jpeg',
-                'image2.jpeg',
-                'image3.png',
-            ];
-            $avatar = $faker->randomElement($usersAvatar);
-            $user->setAvatar($avatar);
+            // $usersAvatar = [
+            //     'image1.jpeg',
+            //     'image2.jpeg',
+            //     'image3.png',
+            // ];
+            // $avatar = $faker->randomElement($usersAvatar);
+            // $user->setAvatar($avatar);
 
             $manager->persist($user);
         }

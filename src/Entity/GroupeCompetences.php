@@ -12,9 +12,7 @@ use Symfony\Component\Validator\Constraints\Count;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\Constraints\IdenticalTo;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\Validator\Constraints\ExpressionLanguageSyntax;
 
 /**
  * @ApiResource(
@@ -70,7 +68,7 @@ class GroupeCompetences
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"competence:write","competence:read","group_comp:read", "group_comp:write", "promogp2:read", "referentiel:read"})
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(message="Champs obligatoire")
      */
     private $libelle;
 
@@ -110,7 +108,15 @@ class GroupeCompetences
     public function getCompetences(): Collection
     {
         return $this->competences;
+        // $thecompetences = new ArrayCollection();
+        // foreach ($this->competences as $competence) {
+        //     if($competence->getArchive() == false){
+        //         $thecompetences->add($competence);
+        //     }
+        // }
+        // return $thecompetences;
     }
+
 
     public function addCompetence(Competence $competence): self
     {
@@ -188,13 +194,4 @@ class GroupeCompetences
 
         return $this;
     }
-
-
-
-
-   
-
-    
-
-
 }

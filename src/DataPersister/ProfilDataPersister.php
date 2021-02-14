@@ -33,6 +33,7 @@ final class ProfilDataPersister implements ContextAwareDataPersisterInterface
       $data->setArchive(true);
       $users = $data->getUsers();
       foreach($users as $user){
+        $data->removeUser($user);
         $user->setArchive(true);
       }
       $this->manager->flush();

@@ -129,11 +129,6 @@ class Promo
      */
     private $avatar;
 
-    /**
-     * @ORM\Column(type="date", nullable=true)
-     * @Groups({"promogp1:read", "promo:write"})
-     */
-    private $datedebut;
 
     /**
      * @ORM\ManyToOne(targetEntity=Referentiel::class, inversedBy="promos")
@@ -149,16 +144,22 @@ class Promo
 
 
     /**
-     * @ORM\Column(type="date", nullable=true)
+     * @ORM\Column(type="string", length=255)
      * @Groups({"promogp1:read", "promo:write"})
      */
-    private $datefin;
+    private $langue;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"promogp1:read", "promo:write"})
      */
-    private $langue;
+    private $debut;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Groups({"promogp1:read", "promo:write"})
+     */
+    private $fin;
 
 
     public function __construct()
@@ -277,19 +278,6 @@ class Promo
         return $this;
     }
 
- 
-
-    public function getDatedebut(): ?\DateTimeInterface
-    {
-        return $this->datedebut;
-    }
-
-    public function setDatedebut(?\DateTimeInterface $datedebut): self
-    {
-        $this->datedebut = $datedebut;
-
-        return $this;
-    }
 
     public function getReferentiel(): ?Referentiel
     {
@@ -316,19 +304,6 @@ class Promo
     }
 
 
-
-    public function getDatefin(): ?\DateTimeInterface
-    {
-        return $this->datefin;
-    }
-
-    public function setDatefin(?\DateTimeInterface $datefin): self
-    {
-        $this->datefin = $datefin;
-
-        return $this;
-    }
-
     public function getLangue(): ?string
     {
         return $this->langue;
@@ -337,6 +312,30 @@ class Promo
     public function setLangue(string $langue): self
     {
         $this->langue = $langue;
+
+        return $this;
+    }
+
+    public function getDebut(): ?string
+    {
+        return $this->debut;
+    }
+
+    public function setDebut(string $debut): self
+    {
+        $this->debut = $debut;
+
+        return $this;
+    }
+
+    public function getFin(): ?string
+    {
+        return $this->fin;
+    }
+
+    public function setFin(string $fin): self
+    {
+        $this->fin = $fin;
 
         return $this;
     }

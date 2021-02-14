@@ -156,7 +156,7 @@ class ResetPasswordController extends AbstractController
         ]);
     }
 
-    public function processSendingPasswordResetEmail(string $emailFormData, MailerInterface $mailer): RedirectResponse
+    public function processSendingPasswordResetEmail(string $emailFormData, MailerInterface $mailer): JsonResponse
     {
         $user = $this->getDoctrine()->getRepository(User::class)->findOneBy([
             'email' => $emailFormData,
@@ -167,7 +167,8 @@ class ResetPasswordController extends AbstractController
 
         // Do not reveal whether a user account was found or not.
         if (!$user) {
-            return $this->redirectToRoute('app_check_email');
+            $this->redirectToRoute('app_check_email');
+            return new JsonResponse('Utilisateur inexistante', 400);
         }
 
         try {
@@ -182,7 +183,8 @@ class ResetPasswordController extends AbstractController
             //     $e->getReason()
             // ));
 
-            return $this->redirectToRoute('app_check_email');
+            $this->redirectToRoute('app_check_email');
+            return new JsonResponse('Ereur', 400);
         }
 
         $email = (new TemplatedEmail())
@@ -198,7 +200,7 @@ class ResetPasswordController extends AbstractController
 
         $mailer->send($email);
 
-        return $this->redirectToRoute('app_check_email');
+        return new JsonResponse('Email envoyé avec succès', 200);
     }
 
     //gestion des relances
@@ -243,8 +245,8 @@ class ResetPasswordController extends AbstractController
         $apprenantEnAttente = [];
         $attentesJson = $serializerInterface->serialize($attentes, 'json',["groups"=>["attente:read"]]);
         $tab = $serializerInterface->decode($attentesJson, "json");
-        foreach ($tab as $key => $value) {
-            if(!in_array($value, $apprenantEnAttente)){
+        foreach ($tab as $value) {
+            if((!in_array($value, $apprenantEnAttente)) && ($value['user']['archive']==false)){
                 $apprenantEnAttente[]=$value;
             }
         }

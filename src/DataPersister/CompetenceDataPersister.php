@@ -4,6 +4,7 @@ namespace App\DataPersister;
 use App\Entity\Competence;
 use Doctrine\ORM\EntityManagerInterface;
 use ApiPlatform\Core\DataPersister\ContextAwareDataPersisterInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 
 final class CompetenceDataPersister implements ContextAwareDataPersisterInterface
 {
@@ -36,9 +37,9 @@ final class CompetenceDataPersister implements ContextAwareDataPersisterInterfac
     public function remove($data, array $context = [])
     {
         $data->setArchive(true);
-        $niveaux = $data->getNiveaux();
-        foreach($niveaux as $niveau){
-          $niveau->setArchive(true);
+        $grpsCompetences = $data->getGroupeCompetences();
+        foreach ($grpsCompetences as $gc) {
+          $data->removeGroupeCompetence($gc);
         }
         $this->manager->flush();
     }

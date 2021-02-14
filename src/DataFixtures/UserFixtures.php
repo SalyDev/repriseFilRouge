@@ -24,6 +24,7 @@ class UserFixtures extends Fixture
     public function load(ObjectManager $manager)
     {
         $faker = Faker\Factory::create();
+        $img = file_get_contents('https://source.unsplash.com/1080x720/?person');
         for ($i = 0; $i < 4; $i++) {
             $profil = $this->profilRepository->findOneBy(["id" => $this->getReference($i)]);
             $roles[$i][] = 'ROLE_'.strtoupper($profil->getLibelle());
@@ -32,7 +33,6 @@ class UserFixtures extends Fixture
                 case 'apprenant':
                     $user = new Apprenant();
                     $user->setProfilsortie($this->getReference('ps'.$j));
-                    $user->setAvatar($faker->imageUrl(640, 480, 'people'));
                     break;
                 case 'admin':
                     $user = new Admin();
@@ -48,7 +48,10 @@ class UserFixtures extends Fixture
             }
             $user->setNom($faker->lastName());
             $user->setPrenom($faker->firstName());
+            $user->setAvatar($img);
             $user->setEmail("mail".$i.$j."@gmail.com");
+            $genres = ["homme", "femme"];
+            $user->setGenre( $faker->randomElement($genres));
             $pass = $this->encoder->encodePassword($user, "password");
             $user->setPassword($pass);
             // referencement vers les profil fixtures

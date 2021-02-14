@@ -4,9 +4,11 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Entity\Admin;
+use App\Repository\ApprenantRepository;
 use App\Services\MyService;
 use App\Repository\UserRepository;
 use App\Repository\ProfilRepository;
+use App\Repository\ProfilsortieRepository;
 use App\Services\UploadAvatarService;
 use App\Services\UserService;
 
@@ -19,13 +21,16 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UserController extends AbstractController
 {
-    private $uploadAvatarService, $userRepository, $userService;
+    private $uploadAvatarService, $userRepository, $userService, $profilRepository, $profilsortieRepository, $apprenantRepository;
     
-    function __construct(UserService $userService, UploadAvatarService $uploadAvatarService, UserRepository $userRepository)
+    function __construct(UserService $userService, UploadAvatarService $uploadAvatarService, UserRepository $userRepository, ProfilRepository $profilRepository, ProfilsortieRepository $profilsortieRepository, ApprenantRepository $apprenantRepository)
     {
         $this->uploadAvatarService = $uploadAvatarService;
         $this->userRepository = $userRepository;
         $this->userService = $userService;
+        $this->profilRepository = $profilRepository;
+        $this->profilsortieRepository = $profilsortieRepository;
+        $this->apprenantRepository = $apprenantRepository;
     }
 
     // fonction permettant d'ajouter un user
@@ -57,6 +62,33 @@ class UserController extends AbstractController
             ]);
             return $this->json($user, 200, []);
      }
+
+    //  la liste des utilisateurs qui ont le mm profil
+      /**
+     * @Route("api/admin/profils/{id}/users", name="getUserOfProfil", methods="GET", defaults={"_api_collection_operation_name"="getUserOfProfil"})
+     */
+     public function getUserOfProfil(int $id){
+        $profil = $this->profilRepository->findOneBy(["id" => $id]);
+        $users = $this->userRepository->findBy([
+            "profil" => $profil,
+            "archive" => false
+            ]);
+        return $this->json($users, 200, []);
+     }
+
+    // la liste des apprenants qui le mm profil de sorties
+       /**
+     * @Route("api/admin/profilsorties/{id}/apprenants", name="getUserOfPs", methods="GET", defaults={"_api_collection_operation_name"="getUserOfPs"})
+     */
+    public function getUserOfPs(int $id){
+        $ps = $this->profilsortieRepository->findBy(["id" => $id]);
+        $users = $this->apprenantRepository->findBy([
+            "profilsortie" => $ps,
+            "archive" => false
+            ]);
+        return $this->json($users, 200, []);
+     }
+
      
 
 }

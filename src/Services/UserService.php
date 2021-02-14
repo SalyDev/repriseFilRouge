@@ -11,6 +11,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use ApiPlatform\Core\Validator\ValidatorInterface;
 use App\Repository\ProfilsortieRepository;
 use App\Repository\PromoRepository;
+use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -20,9 +21,9 @@ use Symfony\Component\HttpFoundation\Request;
 
 class UserService{
 
-    private $manager, $encoder, $serializer, $uploadAvatarService, $validator, $groupeRepository, $profilRepository, $promoRepository, $serializerInterface, $profilsortieRepository;
+    private $manager, $encoder, $serializer, $uploadAvatarService, $validator, $groupeRepository, $profilRepository, $promoRepository, $serializerInterface, $profilsortieRepository, $userRepository;
 
-    function __construct(EntityManagerInterface $manager, UserPasswordEncoderInterface $encoder,SerializerInterface $serializer, UploadAvatarService $uploadAvatarService, ValidatorInterface $validator, ProfilRepository $profilRepository, GroupeRepository $groupeRepository, PromoRepository $promoRepository, SerializerInterface $serializerInterface, ProfilsortieRepository $profilsortieRepository)
+    function __construct(EntityManagerInterface $manager, UserPasswordEncoderInterface $encoder,SerializerInterface $serializer, UploadAvatarService $uploadAvatarService, ValidatorInterface $validator, ProfilRepository $profilRepository, GroupeRepository $groupeRepository, PromoRepository $promoRepository, SerializerInterface $serializerInterface, ProfilsortieRepository $profilsortieRepository, UserRepository $userRepository)
     {
         $this->manager = $manager;
         $this->encoder = $encoder;
@@ -34,6 +35,7 @@ class UserService{
         $this->promoRepository = $promoRepository;
         $this->serializerInterface = $serializerInterface;
         $this->profilsortieRepository = $profilsortieRepository;
+        $this->userRepository = $userRepository;
     }
 
     public function addUser($request, $object, $message)
@@ -178,6 +180,10 @@ class UserService{
                 if($cle=="A"){
                     $emails[]=$value;
                 }
+                $userExist = $this->userRepository->getUserByEmail($value);
+                    if($userExist){
+                        throw new \Exception($value.' : Cet utilisateur existe déjà');
+                }
                 $setter = 'set'.ucfirst($attributs[$cle]);
                 $apprenant->setPassword($this->encoder->encodePassword($apprenant, "pass".uniqid()));
                 $apprenant->$setter($value);
@@ -186,7 +192,6 @@ class UserService{
             // on upload un avatar
             $img = file_get_contents('https://source.unsplash.com/1080x720/?person');
             $apprenant->setAvatar($img);
-            $this->validator->validate($apprenant);
             array_push($arrayOfApprenants, $apprenant);
             $this->manager->persist($apprenant);
             $groupe->addApprenant($apprenant);  

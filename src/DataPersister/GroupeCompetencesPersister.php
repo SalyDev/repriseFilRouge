@@ -28,6 +28,16 @@ class GroupeCompetencesPersister implements ContextAwareDataPersisterInterface
     public function remove($data, array $context = [])
     {
       $data->setArchive(true);
+      // on enleve les relations entre les competences et les referentiels
+      $competences = $data->getCompetences();
+      $referentiels = $data->getReferentiel();
+      foreach ($competences as $competence) {
+        $data->removeCompetence($competence);
+      }
+      foreach ($referentiels as $referentiel) {
+        $data->removeReferentiel($referentiel);
+      }
+
       $this->manager->flush();
     }
 }

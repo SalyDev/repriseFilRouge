@@ -107,13 +107,14 @@ class User implements UserInterface
     private $profil;
 
     /**
-     * @ORM\Column(type="blob", nullable=true)
+     * @ORM\Column(type="blob")
      * @Groups({"user:read", "promogp1:read"})
      */
     private $avatar;
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
+     * @Groups({"attente:read"})
      */
     private $archive = 0;
 

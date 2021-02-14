@@ -30,8 +30,11 @@ final class PromoDataPersister implements ContextAwareDataPersisterInterface
     {
       $data->setArchive(true);
       $groupes = $data->getGroupes();
+      // on enleve les relations entre les groupes(apprenants et formateurs)
+      // on archive les groupes
       foreach($groupes as $groupe){
         $groupe->setArchive(true);
+        $data->removeGroupe($groupe);
       }
       $this->manager->flush();
     }

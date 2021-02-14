@@ -51,7 +51,6 @@ class Profil
 
     /**
      * @ORM\OneToMany(targetEntity=User::class, mappedBy="profil")
-     * @ApiSubresource()
      */
     private $users;
 

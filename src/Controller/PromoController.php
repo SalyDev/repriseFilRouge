@@ -19,6 +19,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Constraints\Date;
 use ApiPlatform\Core\Validator\ValidatorInterface;
+use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\SerializerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -30,8 +31,8 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
  */
 class PromoController extends AbstractController
 {
-    private $encoder, $manager, $referentielRepository, $uploadAvatarService, $validatorInterface, $promoRepository, $groupeRepository, $serializerInterface, $userService;
-    public function __construct(UserPasswordEncoderInterface $encoder, EntityManagerInterface $manager, ReferentielRepository $referentielRepository, UploadAvatarService $uploadAvatarService, ValidatorInterface $validatorInterface, PromoRepository $promoRepository, GroupeRepository $groupeRepository, SerializerInterface $serializerInterface, UserService $userService)
+    private $encoder, $manager, $referentielRepository, $uploadAvatarService, $validatorInterface, $promoRepository, $groupeRepository, $serializerInterface, $userService, $userRepository;
+    public function __construct(UserPasswordEncoderInterface $encoder, EntityManagerInterface $manager, ReferentielRepository $referentielRepository, UploadAvatarService $uploadAvatarService, ValidatorInterface $validatorInterface, PromoRepository $promoRepository, GroupeRepository $groupeRepository, SerializerInterface $serializerInterface, UserService $userService, UserRepository $userRepository)
     {
         $this->encoder = $encoder;
         $this->manager = $manager;
@@ -42,6 +43,7 @@ class PromoController extends AbstractController
         $this->groupeRepository = $groupeRepository;
         $this->serializerInterface = $serializerInterface;
         $this->userService = $userService;
+        $this->userRepository = $userRepository;
     }
 
     // fonction à utiliser pour l'ajout et la modification d'une promo
@@ -108,6 +110,10 @@ class PromoController extends AbstractController
                 $pattern = '/^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/';
                 if (preg_match($pattern, $value)) 
                 {
+                    $userExist = $this->userRepository->getUserByEmail($value);
+                    if($userExist){
+                        throw new \Exception($value.' : Cet utilisateur existe déjà');
+                    }
                     $apprenant = new Apprenant;
                     $apprenant->setEmail($value);
                     $apprenant->setNom("nom");

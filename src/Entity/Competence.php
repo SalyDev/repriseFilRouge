@@ -62,6 +62,7 @@ class Competence
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
+     * @Groups({"group_comp:read"})
      */
     private $archive = 0;
 
@@ -163,6 +164,13 @@ class Competence
     public function getGroupeCompetences(): Collection
     {
         return $this->groupeCompetences;
+        // $grpesCompetences = new ArrayCollection();
+        // foreach ($this->groupeCompetences as $gc) {
+        //     if($gc->getArchive() == false){
+        //         $grpesCompetences->add($gc);
+        //     }
+        // }
+        // return $grpesCompetences;
     }
 
     public function addGroupeCompetence(GroupeCompetences $groupeCompetence): self

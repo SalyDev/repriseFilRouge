@@ -17,6 +17,7 @@ class CompetenceFixtures extends Fixture implements DependentFixtureInterface
             $competence = new Competence;
             $competence->setLibelle($faker->domainName);
             $competence->setDescriptif($faker->text(50));
+            $competence->setEtat('complet');
             $this->addReference('competence'.$i, $competence);
             for($j=1;$j<=3;$j++){
                 $l = 3*$i+$j;

@@ -28,6 +28,16 @@ class ReferentielDataPersister implements ContextAwareDataPersisterInterface
     public function remove($data, array $context = [])
     {
       $data->setArchive(true);
+      // on supprime ses relations avec les promos et le groupes de compétences
+      $promos = $data->getPromos();
+      $grpsCompetences = $data->getGroupeCompetences();
+
+      foreach ($promos as $promo) {
+        $data->removePromo($promo);
+      }
+      foreach ($grpsCompetences as $gc) {
+        $data->removeGroupeCompetence($gc);
+      }
       $this->manager->flush();
     }
 }

@@ -28,6 +28,11 @@ class ProfilSortiePersister implements ContextAwareDataPersisterInterface
     public function remove($data, array $context = [])
     {
       $data->setArchive(true);
+      // on supprime ses relation avec les apprenants
+      $apprenants = $data->getApprenants();
+      foreach ($apprenants as $apprenant) {
+        $data->removeApprenant($apprenant);
+      }
       $this->manager->flush();
     }
 }

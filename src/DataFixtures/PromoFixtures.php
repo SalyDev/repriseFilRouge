@@ -4,6 +4,7 @@ namespace App\DataFixtures;
 
 use Faker;
 use App\Entity\Promo;
+use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -14,27 +15,19 @@ class PromoFixtures extends Fixture implements DependentFixtureInterface
     public function load(ObjectManager $manager)
     {
         $faker = Faker\Factory::create();
-        $programmes = [
-            "file1.pdf",
-            "file2.pdf",
-            "file3.pdf"
-        ];
-
-        $avatars = [
-            'image1.jpeg',
-            'image2.jpeg',
-            'image3.png',
-        ];
-
-        for($i=0;$i<count($avatars);$i++){
+        $img = file_get_contents('https://source.unsplash.com/1080x720/?person');
+        for($i=0;$i<3;$i++){
             $promo = new Promo;
             $promo->setReferenceagate($faker->text(5))
                     ->setDescription($faker->text(5))
                     ->setTitre($faker->unique()->title())
-                    ->setProgramme($faker->randomElement($programmes))
-                    ->setAvatar($faker->randomElement($avatars))
+                    ->setAvatar($img)
                     ->setLieu($faker->city)
-                    ->setReferentiel($this->getReference('referentiel'.$i));
+                    ->setReferentiel($this->getReference('referentiel'.$i))
+                    ->setLangue('Français')
+                    ->setDebut(date_format(new \DateTime(),"Y/m/d H:i:s"))
+                    ->setFin(date_format(new \DateTime(),"Y/m/d H:i:s"))
+                    ;
             $manager->persist($promo);
             $this->addReference('promo'.$i, $promo);
         }

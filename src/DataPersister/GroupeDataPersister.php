@@ -29,6 +29,7 @@ class GroupeDataPersister implements ContextAwareDataPersisterInterface
     public function remove($data, array $context = [])
     {
       $data->setArchive(true);
+      // on enleve les relations entre les promos, les apprenants et les formateurs
       $this->manager->flush();
     }
 }

@@ -122,7 +122,13 @@ class Groupe
      */
     public function getApprenants(): Collection
     {
-        return $this->apprenants;
+        $noArchivedApprenants = new ArrayCollection();
+        foreach ($this->apprenants as $apprenant) {
+           if($apprenant->getArchive() == false){
+               $noArchivedApprenants->add($apprenant);
+           }
+        }
+        return $noArchivedApprenants;
     }
 
     public function addApprenant(Apprenant $apprenant): self

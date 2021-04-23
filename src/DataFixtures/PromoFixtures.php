@@ -15,9 +15,9 @@ class PromoFixtures extends Fixture implements DependentFixtureInterface
     public function load(ObjectManager $manager)
     {
         $faker = Faker\Factory::create();
-        $img = file_get_contents('https://source.unsplash.com/1080x720/?person');
         for($i=0;$i<3;$i++){
             $promo = new Promo;
+            $img = file_get_contents('https://source.unsplash.com/1080x720/?person');
             $promo->setReferenceagate($faker->text(5))
                     ->setDescription($faker->text(5))
                     ->setTitre($faker->unique()->title())

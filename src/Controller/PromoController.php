@@ -102,7 +102,6 @@ class PromoController extends AbstractController
         $promo = $this->promoRepository->findOneBy(['id' => $id]);
         // on trouve le groupe principal de la promo
         $groupePrincipal = $this->groupeRepository->findPrincipalGroup($promo);
-     
         if ($requete->get('groupes')) {
             $groupes = $requete->get('groupes');
             $emails =  preg_split('/[, ]+/', $groupes);
@@ -110,7 +109,8 @@ class PromoController extends AbstractController
                 $pattern = '/^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/';
                 if (preg_match($pattern, $value)) 
                 {
-                    $userExist = $this->userRepository->getUserByEmail($value);
+                    // $userExist = $this->userRepository->getUserByEmail($value);
+                    $userExist = $this->userRepository->findOneBy(["email" => $value]);
                     if($userExist){
                         throw new \Exception($value.' : Cet utilisateur existe déjà');
                     }

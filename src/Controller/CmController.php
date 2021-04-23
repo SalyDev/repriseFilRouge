@@ -48,7 +48,8 @@ class CmController extends AbstractController
     {
         $cm = $this->cmRepository->findOneBy(["id" => $id]);
         $this->denyAccessUnlessGranted('EDIT', $cm, "Accès non autorisé");      
-        return $this->userService->updateUser($cm, $request, "CM inexistant", "CM modifié avec succes");
+        $cm = $this->userService->updateUser($cm, $request, "CM inexistant");
+        return $this->json($cm, 201);
     }
 
      /**

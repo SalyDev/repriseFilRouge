@@ -57,7 +57,9 @@ class ApprenantController extends AbstractController
     public function updateApprenant(int $id, Request $request){
         $object = $this->apprenantRepository->findOneBy(["id" => $id]);      
         $this->denyAccessUnlessGranted('EDIT', $object, "Accès est refusé");
-        return $this->userService->updateUser($object, $request, "Apprenant inexistant", "Apprenant modifié avec succès");
+        $apprenant = $this->userService->updateUser($object, $request, "Apprenant inexistant");
+        return $this->json($apprenant, 201);
+
     }
 
     /**

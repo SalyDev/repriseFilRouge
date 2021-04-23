@@ -50,7 +50,8 @@ class AdminController extends AbstractController
     public function updateAdmin(int $id, Request $request){
         $object = $this->adminRepository->findOneBy(["id" => $id]);
         $this->denyAccessUnlessGranted('ADD', $object, "Accès refusé");
-        return $this->userService->updateUser($object, $request, "Admin inexistant", "Admin modifié avec succès");
+        $admin =  $this->userService->updateUser($object, $request, "Admin inexistant");
+        return $this->json($admin, 201);
     }
 
     /**

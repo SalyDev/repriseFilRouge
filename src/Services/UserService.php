@@ -9,6 +9,7 @@ use App\Repository\GroupeRepository;
 use App\Repository\ProfilRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use ApiPlatform\Core\Validator\ValidatorInterface;
+use App\Entity\User;
 use App\Repository\ProfilsortieRepository;
 use App\Repository\PromoRepository;
 use App\Repository\UserRepository;
@@ -97,10 +98,11 @@ class UserService{
         return $this->show($user);
     }
 
-    public function updateUser($object, $request, $errorMsg, $succesMsg){
+    public function updateUser($object, $request, $errorMsg){
         if(!$object){
             return new JsonResponse($errorMsg);
         }
+        $details = [];
         $req = $request->request->all();
         if($request->get('groupes')){
             $groupe = $this->groupeRepository->findOneBy(["id" => $request->get('groupes')]);
@@ -142,10 +144,17 @@ class UserService{
             $object->setAvatar($avatar);
         }
         
+
         $this->validator->validate($object);
         $this->manager->persist($object);
         $this->manager->flush();
-        return new JsonResponse($succesMsg);
+        // dd($object->getAvatar());
+        // dd($object);
+        // return new JsonResponse($object, 201);
+        // return new JsonResponse($object, 201, [], true);
+        // return new JsonResponse($object, 200);
+        // return $this->json($object);
+        return $object;
     }
 
     public function uploadExcel($request, $groupe){
@@ -180,7 +189,10 @@ class UserService{
                 if($cle=="A"){
                     $emails[]=$value;
                 }
-                $userExist = $this->userRepository->getUserByEmail($value);
+                $userExist = $this->userRepository->findOneBy([
+                "email" => $value,
+                "archive" => false
+                ]);
                     if($userExist){
                         throw new \Exception($value.' : Cet utilisateur existe déjà');
                 }

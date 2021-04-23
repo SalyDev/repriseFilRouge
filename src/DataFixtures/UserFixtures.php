@@ -24,8 +24,8 @@ class UserFixtures extends Fixture
     public function load(ObjectManager $manager)
     {
         $faker = Faker\Factory::create();
-        $img = file_get_contents('https://source.unsplash.com/1080x720/?person');
         for ($i = 0; $i < 4; $i++) {
+            $img = file_get_contents('https://source.unsplash.com/1080x720/?person');
             $profil = $this->profilRepository->findOneBy(["id" => $this->getReference($i)]);
             $roles[$i][] = 'ROLE_'.strtoupper($profil->getLibelle());
             for($j=0; $j<3; $j++){

@@ -25,6 +25,7 @@ class GroupeFixtures extends Fixture implements DependentFixtureInterface
             $groupe = new Groupe();
             $groupe->setNom($faker->text(10));
             $groupe->setPromo($this->getReference('promo'.$i));
+            $groupe->setType('principal');
             $apprenants = $this->apprenantRepository->findAll();
             $formateurs = $this->formateurRepository->findAll();
             for($j=0;$j<count($apprenants);$j++){

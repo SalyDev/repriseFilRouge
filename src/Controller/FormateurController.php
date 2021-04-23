@@ -48,7 +48,8 @@ class FormateurController extends AbstractController
     {
         $formateur = $this->formateurRepository->findOneBy(["id" => $id]);
         $this->denyAccessUnlessGranted('EDIT', $formateur, "Accès refusé");
-        return $this->userService->updateUser($formateur, $request, "Formateur inexistant", "Formateur modifié avec succes");
+        $formateur = $this->userService->updateUser($formateur, $request, "Formateur inexistant");
+        return $this->json($formateur, 201);
     }
 
      /**
